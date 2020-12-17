@@ -3,30 +3,31 @@
 
   const select = {
     templateOf: {
-      booksList: '#template-book',
+      bookTemplate: '#template-book',
     },
     containerOf: {
       bookList: '.books-list',
+      filters: '.filters',
     },
     class: {
       favouriteBook: 'favorite',
     },
-    book: {
-      bookImage: ''
-    },
+
   };
 
   const templates = {
-    booksList: Handlebars.compile(document.querySelector(select.templateOf.booksList).innerHTML),
+    bookTemplate: Handlebars.compile(document.querySelector(select.templateOf.bookTemplate).innerHTML),
   };
 
   const menuContainer = document.querySelector(select.containerOf.bookList);
+  //const filterWrapper = document.querySelector(select.wrpper.filters);
   const allBooks = [];
   const favouriteBooks = [];
+  //const filters = [];
 
   const render = function() {
     for(let book of dataSource.books){
-      const generatedHTML = templates.booksList(book);
+      const generatedHTML = templates.bookTemplate(book);
 
       const element = utils.createDOMFromHTML(generatedHTML);
 
@@ -36,7 +37,24 @@
   };
 
   const initActions = function(){
-    for(let book of allBooks){
+    menuContainer.addEventListener('dblclick', function(event){
+      event.preventDefault;
+      const clickedElement = event.target;
+      //console.log(clickedElement);
+      //console.log(clickedElement.classList.contains('.book__image'));
+
+      if(clickedElement.classList.contains('.book__image')){
+        const id = clickedElement.getAttribute('data-id');
+        if(!clickedElement.classList.contains(select.class.favouriteBook)){
+          favouriteBooks.push(id);
+          clickedElement.classList.add(select.class.favouriteBook);
+        } else {
+          favouriteBooks.splice(favouriteBooks.indexOf(id), 1);
+          clickedElement.classList.remove(select.class.favouriteBook);
+        }
+      }
+    });
+    /*for(let book of allBooks){
       const bookCover = book.querySelector('.book__image');
       console.log(bookCover);
 
@@ -51,10 +69,13 @@
           favouriteBooks.splice(favouriteBooks.indexOf(id));
           bookCover.classList.remove(select.class.favouriteBook);
         }
+      }); */
 
-      });
-    }
+    //  filterWrapper.addEventListener('click', function(event){
+    //  if(clickedElement.tagName === 'INPUT' && clickedElement.type === 'checkbox' && clickedElement.name === 'filter' )
+    // });
   };
+
 
   render();
   initActions();
